@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pointeuse">
+<meta name="theme-color" content="#13203A" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C1322" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Pointeuse de poche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Base autonome (remplace le squelette de la visionneuse) */
+:root{color-scheme:light;--bar:#13203A;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root{--bar:#0C1322}}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bar);z-index:10}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+/* Layout : une colonne façon carte de pointage — ticket perforé en tête (le résultat), réglages dessous, onglets en segment */
+:root{
+  --paper:#ECEFF4; --card:#FFFFFF; --field:#F4F6FA; --ink:#13203A; --muted:#5A6580; --line:#D2D8E2;
+  --ticket:#13203A; --ticket-fg:#F2F4F8; --ticket-muted:#9AA6BF; --track:#2C3A5A;
+  --accent:#D62F45; --accent-fg:#FFFFFF; --good:#22A06B; --good-fg:#FFFFFF;
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1322; --card:#141D30; --field:#1B2640; --ink:#E6EBF3; --muted:#93A0B8; --line:#27334C;
+    --ticket:#1B2742; --ticket-fg:#F2F4F8; --ticket-muted:#93A0B8; --track:#33425F;
+    --accent:#FF5A6E; --accent-fg:#1A0A0D; --good:#46CF8F; --good-fg:#08251A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1322; --card:#141D30; --field:#1B2640; --ink:#E6EBF3; --muted:#93A0B8; --line:#27334C;
+  --ticket:#1B2742; --ticket-fg:#F2F4F8; --ticket-muted:#93A0B8; --track:#33425F;
+  --accent:#FF5A6E; --accent-fg:#1A0A0D; --good:#46CF8F; --good-fg:#08251A; color-scheme:dark;
+}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+*{box-sizing:border-box}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.wrap{max-width:480px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 32px;display:flex;flex-direction:column;gap:14px}
+
+.top{display:flex;flex-direction:column;gap:10px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand b{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.brand b::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.clock{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
+.tabs button{min-height:40px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-weight:600;font-size:15px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--card)}
+
+.panel{display:flex;flex-direction:column;gap:14px}
+
+.ticket{position:relative;background:var(--ticket);color:var(--ticket-fg);border-radius:18px;padding:30px 20px 18px;overflow:hidden;display:flex;flex-direction:column;gap:12px}
+.ticket::before{content:"";position:absolute;left:14px;right:14px;top:10px;height:8px;background:radial-gradient(circle at 4px 4px,var(--paper) 3.2px,transparent 3.7px) 0 0/16px 8px repeat-x}
+.t-label{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ticket-muted)}
+.t-time{font-family:var(--f-display);font-weight:800;font-size:clamp(84px,28vw,132px);line-height:.88;letter-spacing:.01em;font-variant-numeric:tabular-nums;display:flex;align-items:flex-start;gap:6px}
+.t-time.sm{font-size:clamp(60px,19vw,88px)}
+.t-time sup{font-family:var(--f-mono);font-size:16px;font-weight:600;color:var(--accent);line-height:1;margin-top:8px}
+.t-sub{font-size:14px;color:var(--ticket-muted)}
+.t-sub b{color:var(--ticket-fg);font-weight:600}
+
+.chip{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:999px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;border:1px solid var(--ticket-muted);color:var(--ticket-fg);align-self:flex-start}
+.chip.run{background:var(--ticket-fg);color:var(--ticket);border-color:var(--ticket-fg)}
+.chip.done,.chip.good{background:var(--good);color:var(--good-fg);border-color:var(--good)}
+.chip.over{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+
+.track{height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.fill{height:100%;width:0;background:var(--accent);border-radius:99px}
+.fill.done{background:var(--good)}
+@media (prefers-reduced-motion: no-preference){.fill{transition:width .4s ease}}
+
+.t-ends{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;color:var(--ticket-muted);text-transform:uppercase;letter-spacing:.08em}
+.t-ends span{display:flex;flex-direction:column;gap:2px}
+.t-ends span:nth-child(2){align-items:center}
+.t-ends span:nth-child(3){align-items:flex-end}
+.t-ends b{font-family:var(--f-mono);font-size:15px;color:var(--ticket-fg);font-weight:600;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px 16px}
+.row{display:grid;grid-template-columns:76px 1fr;align-items:center;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row>label,.row>.lbl{font-weight:600;font-size:15px}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
+.ctl.col{flex-direction:column;align-items:flex-start}
+
+input[type="time"],.dur input{font-family:var(--f-mono);font-size:20px;font-weight:500;background:var(--field);border:1px solid var(--line);border-radius:10px;min-height:46px;color:var(--ink);font-variant-numeric:tabular-nums}
+input[type="time"]{-webkit-appearance:none;appearance:none;padding:6px 10px;min-width:6.4em}
+input[type="time"]::-webkit-date-and-time-value{text-align:left}
+.dur{display:inline-flex;align-items:center;gap:6px}
+.dur input{width:3.4em;padding:6px 4px;text-align:center}
+.dur .u{font-size:14px;color:var(--muted)}
+.hint{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+
+.btn{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-fg);font-weight:600;font-size:15px;cursor:pointer}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--field);color:var(--ink);font-size:14px;font-weight:600;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+
+.crow{display:flex;align-items:center;gap:10px;padding-block:10px;border-bottom:1px solid var(--line)}
+.crow:last-child{border-bottom:0}
+.sign{width:46px;height:46px;flex:none;border-radius:10px;border:1px solid var(--line);background:var(--field);color:var(--ink);font-family:var(--f-mono);font-size:22px;font-weight:600;cursor:pointer}
+.sign.neg{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.del{margin-left:auto;width:40px;height:40px;flex:none;border:0;border-radius:10px;background:transparent;color:var(--muted);font-size:24px;cursor:pointer}
+.card.pad{padding-block:4px 14px}
+.card.pad .actions{padding-top:12px}
+
+.note{font-size:13px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><b>Pointeuse</b><span class="clock" id="clock"></span></div>
+    <nav class="tabs" role="tablist" aria-label="Outils">
+      <button type="button" role="tab" id="tab-jour" data-p="jour" aria-controls="p-jour" aria-selected="true">Journée</button>
+      <button type="button" role="tab" id="tab-calcul" data-p="calcul" aria-controls="p-calcul" aria-selected="false">Calcul</button>
+      <button type="button" role="tab" id="tab-ecart" data-p="ecart" aria-controls="p-ecart" aria-selected="false">Écart</button>
+    </nav>
+  </header>
+
+  <!-- JOURNÉE -->
+  <section class="panel" id="p-jour" role="tabpanel" aria-labelledby="tab-jour">
+    <div class="ticket" aria-live="polite">
+      <div class="t-label">Fin de journée</div>
+      <div class="t-time"><span id="endTime">--:--</span><sup id="endDay" hidden>+1 j</sup></div>
+      <span class="chip" id="status">—</span>
+      <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+      <div class="t-ends">
+        <span>Arrivée<b id="tArr">--:--</b></span>
+        <span>Pause<b id="tPause">0 h 00</b></span>
+        <span>Fin<b id="tEnd">--:--</b></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <label for="arr">Arrivée</label>
+        <div class="ctl">
+          <input type="time" id="arr">
+          <button type="button" class="btn ghost" id="arrNow">Maintenant</button>
+        </div>
+      </div>
+      <div class="row">
+        <label for="tH">À faire</label>
+        <div class="ctl">
+          <span class="dur">
+            <input id="tH" inputmode="numeric" pattern="[0-9]*" maxlength="2" aria-label="Heures à faire"><span class="u">h</span>
+            <input id="tM" inputmode="numeric" pattern="[0-9]*" maxlength="2" aria-label="Minutes à faire"><span class="u">min</span>
+          </span>
+          <span class="hint" id="tCent"></span>
+        </div>
+      </div>
+      <div class="row">
+        <label for="pH">Pause</label>
+        <div class="ctl col">
+          <div class="chips" id="pChips">
+            <button type="button" data-m="0" aria-pressed="false">Aucune</button>
+            <button type="button" data-m="30" aria-pressed="false">30 min</button>
+            <button type="button" data-m="45" aria-pressed="false">45 min</button>
+            <button type="button" data-m="60" aria-pressed="false">1 h</button>
+          </div>
+          <span class="dur">
+            <input id="pH" inputmode="numeric" pattern="[0-9]*" maxlength="2" aria-label="Heures de pause"><span class="u">h</span>
+            <input id="pM" inputmode="numeric" pattern="[0-9]*" maxlength="3" aria-label="Minutes de pause"><span class="u">min</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <p class="note">Objectif, pause et arrivée du jour restent enregistrés sur ce téléphone.</p>
+  </section>
+
+  <!-- CALCUL -->
+  <section class="panel" id="p-calcul" role="tabpanel" aria-labelledby="tab-calcul" hidden>
+    <div class="card pad">
+      <div id="rows"></div>
+      <div class="actions"><button type="button" class="btn ghost" id="addRow">+ Ajouter une ligne</button></div>
+    </div>
+    <div class="ticket" aria-live="polite">
+      <div class="t-label">Total</div>
+      <div class="t-time sm" id="sumTime">00:00</div>
+      <div class="t-sub" id="sumWords"></div>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="sumToFirst">Total → ligne 1</button>
+      <button type="button" class="btn ghost" id="clearRows">Effacer</button>
+    </div>
+  </section>
+
+  <!-- ÉCART -->
+  <section class="panel" id="p-ecart" role="tabpanel" aria-labelledby="tab-ecart" hidden>
+    <div class="card">
+      <div class="row">
+        <label for="eFrom">De</label>
+        <div class="ctl"><input type="time" id="eFrom"></div>
+      </div>
+      <div class="row">
+        <label for="eTo">À</label>
+        <div class="ctl">
+          <input type="time" id="eTo">
+          <button type="button" class="btn ghost" id="eNow">Maintenant</button>
+        </div>
+      </div>
+      <div class="row">
+        <label for="eH">Pause</label>
+        <div class="ctl">
+          <span class="dur">
+            <input id="eH" inputmode="numeric" pattern="[0-9]*" maxlength="2" aria-label="Heures de pause"><span class="u">h</span>
+            <input id="eM" inputmode="numeric" pattern="[0-9]*" maxlength="3" aria-label="Minutes de pause"><span class="u">min</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ticket" aria-live="polite">
+      <div class="t-label">Temps travaillé</div>
+      <div class="t-time sm" id="eRes">--:--</div>
+      <div class="t-sub" id="eSub"></div>
+      <span class="chip" id="eSolde">—</span>
+    </div>
+    <div class="actions"><button type="button" class="btn ghost" id="eReset">Reprendre ma journée</button></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const S = {
+    get(k, d) { try { const v = localStorage.getItem('pdp.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('pdp.' + k, JSON.stringify(v)); } catch (e) {} }
+  };
+  const pad = n => String(n).padStart(2, '0');
+  const today = () => { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+  const nowMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
+  const toClock = m => { m = ((m % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
+  const parseT = v => { if (!v || !/^\d{1,2}:\d{2}/.test(v)) return null; const [h, m] = v.split(':').map(Number); return h * 60 + m; };
+  const int = el => { const v = parseInt(String(el.value).replace(/\D/g, ''), 10); return isNaN(v) ? 0 : v; };
+  const dur = m => { const s = m < 0 ? '−' : ''; m = Math.abs(m); return s + Math.floor(m / 60) + ' h ' + pad(m % 60); };
+  const hhmm = m => { const s = m < 0 ? '−' : ''; m = Math.abs(m); return s + pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
+  const cent = m => (m / 60).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' h';
+  const words = m => { const s = m < 0 ? 'moins ' : ''; m = Math.abs(m); const h = Math.floor(m / 60), n = m % 60;
+    return s + h + (h > 1 ? ' heures ' : ' heure ') + n + (n > 1 ? ' minutes' : ' minute'); };
+  const setDur = (h, m, v) => { h.value = Math.floor(v / 60); m.value = pad(v % 60); };
+  const digits = el => { const c = el.value.replace(/\D/g, '').slice(0, el.maxLength > 0 ? el.maxLength : 3); if (c !== el.value) el.value = c; };
+  const durOf = (h, m) => int(h) * 60 + int(m);
+  const normDur = (h, m) => setDur(h, m, durOf(h, m));
+
+  /* ---------- Horloge ---------- */
+  const clock = $('clock');
+  const tickClock = () => {
+    const d = new Date();
+    clock.textContent = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + toClock(nowMin());
+  };
+
+  /* ---------- Journée ---------- */
+  const arr = $('arr'), tH = $('tH'), tM = $('tM'), pH = $('pH'), pM = $('pM');
+  setDur(tH, tM, S.get('target', 528));
+  setDur(pH, pM, S.get('pause', 0));
+  const saved = S.get('arr', null);
+  if (saved && saved.d === today() && parseT(saved.v) != null) arr.value = saved.v;
+  else { arr.value = toClock(nowMin()); S.set('arr', { d: today(), v: arr.value }); }
+
+  const chips = [...document.querySelectorAll('#pChips button')];
+
+  function calcJour() {
+    const a = parseT(arr.value), t = durOf(tH, tM), p = durOf(pH, pM);
+    $('tCent').textContent = '= ' + cent(t);
+    $('tPause').textContent = dur(p);
+    chips.forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.m === p)));
+    const st = $('status'), fill = $('fill');
+    if (a == null) {
+      $('endTime').textContent = '--:--'; $('tEnd').textContent = '--:--'; $('tArr').textContent = '--:--';
+      $('endDay').hidden = true; st.textContent = 'Saisis ton heure d’arrivée'; st.className = 'chip'; fill.style.width = '0'; return;
+    }
+    const end = a + t + p, day = Math.floor(end / 1440);
+    $('endTime').textContent = toClock(end);
+    $('endDay').hidden = day < 1; $('endDay').textContent = '+' + day + ' j';
+    $('tArr').textContent = toClock(a); $('tEnd').textContent = toClock(end);
+    let n = nowMin(); if (n < a && end > 1440) n += 1440;
+    const span = end - a; let cls, frac;
+    if (n < a) { st.textContent = 'Début dans ' + dur(a - n); cls = ''; frac = 0; }
+    else if (n < end) { st.textContent = 'Reste ' + dur(end - n); cls = 'run'; frac = span > 0 ? (n - a) / span : 1; }
+    else { st.textContent = 'Terminé · +' + dur(n - end); cls = 'done'; frac = 1; }
+    st.className = 'chip ' + cls;
+    fill.style.width = (Math.min(1, Math.max(0, frac)) * 100).toFixed(1) + '%';
+    fill.classList.toggle('done', cls === 'done');
+  }
+
+  arr.addEventListener('input', () => { S.set('arr', { d: today(), v: arr.value }); calcJour(); syncEcart(); });
+  $('arrNow').addEventListener('click', () => { arr.value = toClock(nowMin()); S.set('arr', { d: today(), v: arr.value }); calcJour(); syncEcart(); });
+  [tH, tM].forEach(el => {
+    el.addEventListener('input', () => { digits(el); S.set('target', durOf(tH, tM)); calcJour(); calcEcart(); });
+    el.addEventListener('blur', () => normDur(tH, tM));
+  });
+  [pH, pM].forEach(el => {
+    el.addEventListener('input', () => { digits(el); S.set('pause', durOf(pH, pM)); calcJour(); syncEcart(); });
+    el.addEventListener('blur', () => normDur(pH, pM));
+  });
+  chips.forEach(c => c.addEventListener('click', () => {
+    setDur(pH, pM, +c.dataset.m); S.set('pause', +c.dataset.m); calcJour(); syncEcart();
+  }));
+
+  /* ---------- Calcul ---------- */
+  const rowsEl = $('rows');
+  const blank = () => ({ s: 1, h: '', m: '' });
+  let rows = S.get('rows', null);
+  if (!Array.isArray(rows) || !rows.length) rows = [blank(), blank()];
+  rows = rows.map(r => ({ s: r.s < 0 ? -1 : 1, h: String(r.h || '').replace(/\D/g, '').slice(0, 3), m: String(r.m || '').replace(/\D/g, '').slice(0, 3) }));
+  const saveRows = () => S.set('rows', rows);
+
+  function renderRows() {
+    rowsEl.innerHTML = rows.map((r, i) => `
+      <div class="crow" data-i="${i}">
+        <button type="button" class="sign${r.s < 0 ? ' neg' : ''}" data-act="sign" aria-label="Ligne ${i + 1} : ${r.s < 0 ? 'soustraire' : 'ajouter'}, toucher pour inverser">${r.s < 0 ? '−' : '+'}</button>
+        <span class="dur">
+          <input id="r${i}h" class="h" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="0" value="${r.h}" aria-label="Heures, ligne ${i + 1}"><span class="u">h</span>
+          <input id="r${i}m" class="m" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="00" value="${r.m}" aria-label="Minutes, ligne ${i + 1}"><span class="u">min</span>
+        </span>
+        ${rows.length > 1 ? `<button type="button" class="del" data-act="del" aria-label="Supprimer la ligne ${i + 1}">×</button>` : ''}
+      </div>`).join('');
+    calcSum();
+  }
+  const rowMin = r => (parseInt(r.h, 10) || 0) * 60 + (parseInt(r.m, 10) || 0);
+  const total = () => rows.reduce((a, r) => a + r.s * rowMin(r), 0);
+  function calcSum() {
+    const t = total();
+    $('sumTime').textContent = hhmm(t);
+    $('sumWords').innerHTML = '<b>' + words(t) + '</b> · ' + cent(t).replace('-', '−');
+  }
+  rowsEl.addEventListener('input', e => {
+    const el = e.target; if (el.tagName !== 'INPUT') return;
+    digits(el);
+    const i = +el.closest('.crow').dataset.i;
+    rows[i][el.classList.contains('h') ? 'h' : 'm'] = el.value;
+    saveRows(); calcSum();
+  });
+  rowsEl.addEventListener('focusout', e => {
+    const el = e.target; if (el.tagName !== 'INPUT') return;
+    const row = el.closest('.crow'), i = +row.dataset.i, r = rows[i];
+    if ((parseInt(r.m, 10) || 0) >= 60) {
+      const v = rowMin(r); r.h = String(Math.floor(v / 60)).slice(0, 3); r.m = pad(v % 60);
+      row.querySelector('.h').value = r.h; row.querySelector('.m').value = r.m; saveRows(); calcSum();
+    }
+  });
+  rowsEl.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const i = +b.closest('.crow').dataset.i;
+    if (b.dataset.act === 'sign') rows[i].s *= -1;
+    if (b.dataset.act === 'del') rows.splice(i, 1);
+    saveRows(); renderRows();
+  });
+  $('addRow').addEventListener('click', () => {
+    rows.push(blank()); saveRows(); renderRows();
+    const el = $('r' + (rows.length - 1) + 'h'); if (el) el.focus();
+  });
+  $('clearRows').addEventListener('click', () => { rows = [blank(), blank()]; saveRows(); renderRows(); });
+  $('sumToFirst').addEventListener('click', () => {
+    const t = total(), a = Math.abs(t);
+    rows = [{ s: t < 0 ? -1 : 1, h: String(Math.floor(a / 60)).slice(0, 3), m: pad(a % 60) }, blank()];
+    saveRows(); renderRows();
+    const el = $('r1h'); if (el) el.focus();
+  });
+
+  /* ---------- Écart ---------- */
+  const eFrom = $('eFrom'), eTo = $('eTo'), eH = $('eH'), eM = $('eM');
+  let eTouched = false;
+  function fillEcart() {
+    eFrom.value = arr.value; eTo.value = toClock(nowMin()); setDur(eH, eM, durOf(pH, pM)); calcEcart();
+  }
+  function syncEcart() { if (!eTouched) fillEcart(); }
+  function calcEcart() {
+    const a = parseT(eFrom.value), b = parseT(eTo.value), sol = $('eSolde');
+    if (a == null || b == null) { $('eRes').textContent = '--:--'; $('eSub').textContent = 'Renseigne les deux heures.'; sol.textContent = '—'; sol.className = 'chip'; return; }
+    let d = b - a; const night = d < 0; if (night) d += 1440;
+    const p = durOf(eH, eM), w = d - p, t = durOf(tH, tM);
+    $('eRes').textContent = hhmm(w);
+    $('eSub').innerHTML = (night ? 'Passage de minuit · ' : '') + '<b>' + dur(d) + '</b> de présence' + (p ? ' − ' + dur(p) + ' de pause' : '') + ' · ' + cent(w).replace('-', '−');
+    const s = w - t;
+    if (s >= 0) { sol.textContent = '+' + dur(s) + ' au-delà de ' + dur(t); sol.className = 'chip good'; }
+    else { sol.textContent = 'Il manque ' + dur(-s) + ' pour ' + dur(t); sol.className = 'chip over'; }
+  }
+  [eFrom, eTo].forEach(el => el.addEventListener('input', () => { eTouched = true; calcEcart(); }));
+  [eH, eM].forEach(el => {
+    el.addEventListener('input', () => { digits(el); eTouched = true; calcEcart(); });
+    el.addEventListener('blur', () => normDur(eH, eM));
+  });
+  $('eNow').addEventListener('click', () => { eTo.value = toClock(nowMin()); eTouched = true; calcEcart(); });
+  $('eReset').addEventListener('click', () => { eTouched = false; fillEcart(); });
+
+  /* ---------- Onglets ---------- */
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  function show(p, focus) {
+    tabs.forEach(t => {
+      const on = t.dataset.p === p;
+      t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1;
+      $('p-' + t.dataset.p).hidden = !on;
+      if (on && focus) t.focus();
+    });
+    S.set('tab', p);
+    if (p === 'ecart') syncEcart();
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => show(t.dataset.p));
+    t.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      show(n.dataset.p, true);
+    });
+  });
+  const valid = ['jour', 'calcul', 'ecart'];
+  const h = location.hash.replace('#', '');
+  const first = valid.includes(h) ? h : (valid.includes(S.get('tab', 'jour')) ? S.get('tab', 'jour') : 'jour');
+
+  /* ---------- Démarrage ---------- */
+  tickClock(); calcJour(); renderRows(); fillEcart(); show(first);
+  const refresh = () => { tickClock(); calcJour(); syncEcart(); };
+  setInterval(refresh, 5000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
+}
+</script>
+</body>
+</html>
