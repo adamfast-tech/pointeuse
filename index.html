@@ -17,7 +17,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Base autonome (remplace le squelette de la visionneuse) */
 :root{color-scheme:light;--bar:#13203A;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme: dark){:root{--bar:#0C1322}}
 html,body{margin:0}
@@ -61,8 +60,8 @@ button,input{font:inherit;color:inherit}
 .brand b::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent)}
 .clock{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
-.tabs button{min-height:40px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-weight:600;font-size:15px;cursor:pointer}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
+.tabs button{min-height:40px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-weight:600;font-size:15px;cursor:pointer;padding:0 4px}
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--card)}
 
 .panel{display:flex;flex-direction:column;gap:14px}
@@ -70,6 +69,8 @@ button,input{font:inherit;color:inherit}
 .ticket{position:relative;background:var(--ticket);color:var(--ticket-fg);border-radius:18px;padding:30px 20px 18px;overflow:hidden;display:flex;flex-direction:column;gap:12px}
 .ticket::before{content:"";position:absolute;left:14px;right:14px;top:10px;height:8px;background:radial-gradient(circle at 4px 4px,var(--paper) 3.2px,transparent 3.7px) 0 0/16px 8px repeat-x}
 .t-label{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ticket-muted)}
+.t-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.t-name{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:.04em;text-transform:uppercase;min-width:0;overflow-wrap:anywhere}
 .t-time{font-family:var(--f-display);font-weight:800;font-size:clamp(84px,28vw,132px);line-height:.88;letter-spacing:.01em;font-variant-numeric:tabular-nums;display:flex;align-items:flex-start;gap:6px}
 .t-time.sm{font-size:clamp(60px,19vw,88px)}
 .t-time sup{font-family:var(--f-mono);font-size:16px;font-weight:600;color:var(--accent);line-height:1;margin-top:8px}
@@ -109,6 +110,8 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
 
 .btn{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-fg);font-weight:600;font-size:15px;cursor:pointer}
 .btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn.danger{background:transparent;border-color:var(--accent);color:var(--accent)}
+.btn[disabled]{opacity:.55;cursor:default}
 .actions{display:flex;flex-wrap:wrap;gap:8px}
 
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -123,7 +126,41 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
 .card.pad{padding-block:4px 14px}
 .card.pad .actions{padding-top:12px}
 
-.note{font-size:13px;color:var(--muted);text-align:center}
+.note{font-size:13px;color:var(--muted);text-align:center;margin:0}
+.note b{color:var(--ink);font-family:var(--f-mono);font-weight:600}
+
+/* Partage */
+.sect{display:flex;flex-direction:column;gap:12px;padding-block:16px}
+.sect + .sect{border-top:1px solid var(--line)}
+.msg:empty{display:none}
+.sect h2{margin:0;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sect p{margin:0;font-size:14px;color:var(--muted);max-width:60ch}
+.txt{width:100%;min-height:46px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink);font-size:17px}
+.txt.code{font-family:var(--f-mono);font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.txt.code::placeholder{font-family:var(--f-body);font-weight:400;letter-spacing:0;text-transform:none}
+.inline{display:flex;gap:8px;align-items:stretch}
+.inline .txt{flex:1;min-width:0}
+.codebox{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.codebox output{font-family:var(--f-mono);font-size:28px;font-weight:600;letter-spacing:.14em;font-variant-numeric:tabular-nums;user-select:all;-webkit-user-select:all}
+.msg{font-size:14px;margin:0;color:var(--muted)}
+.msg.err{color:var(--accent)}
+.msg.ok{color:var(--good)}
+.callout{border:1px solid var(--good);border-radius:12px;padding:12px;font-size:14px}
+
+.follows{display:flex;flex-direction:column;gap:12px}
+.ticket.mini{padding:26px 18px 16px;gap:10px}
+.ticket.mini .t-time{font-size:clamp(56px,18vw,80px)}
+.ticket.mini .del{color:var(--ticket-muted);margin:0;width:36px;height:36px}
+.t-foot{font-size:12px;color:var(--ticket-muted)}
+
+.flist .frow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px;padding-block:12px;border-bottom:1px solid var(--line)}
+.flist .frow:last-child{border-bottom:0}
+.frow .fn{font-weight:600}
+.frow .ft{font-family:var(--f-mono);font-size:15px;color:var(--muted);grid-column:1}
+.frow .fc{grid-row:1 / span 2;grid-column:2;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
+.frow .fc.run{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.frow .fc.done{background:var(--good);color:var(--good-fg);border-color:var(--good)}
+.frow .fc.over{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -134,6 +171,7 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
       <button type="button" role="tab" id="tab-jour" data-p="jour" aria-controls="p-jour" aria-selected="true">Journée</button>
       <button type="button" role="tab" id="tab-calcul" data-p="calcul" aria-controls="p-calcul" aria-selected="false">Calcul</button>
       <button type="button" role="tab" id="tab-ecart" data-p="ecart" aria-controls="p-ecart" aria-selected="false">Écart</button>
+      <button type="button" role="tab" id="tab-partage" data-p="partage" aria-controls="p-partage" aria-selected="false">Partage</button>
     </nav>
   </header>
 
@@ -150,6 +188,8 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
         <span>Fin<b id="tEnd">--:--</b></span>
       </div>
     </div>
+
+    <div class="card flist" id="suivisJour" hidden></div>
 
     <div class="card">
       <div class="row">
@@ -184,8 +224,16 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
           </span>
         </div>
       </div>
+      <div class="row">
+        <label for="dep">Départ</label>
+        <div class="ctl">
+          <input type="time" id="dep">
+          <button type="button" class="btn ghost" id="depNow">Je pars</button>
+          <button type="button" class="btn ghost" id="depClr" hidden>Effacer</button>
+        </div>
+      </div>
     </div>
-    <p class="note">Objectif, pause et arrivée du jour restent enregistrés sur ce téléphone.</p>
+    <p class="note" id="syncNote"></p>
   </section>
 
   <!-- CALCUL -->
@@ -237,17 +285,95 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
     </div>
     <div class="actions"><button type="button" class="btn ghost" id="eReset">Reprendre ma journée</button></div>
   </section>
+
+  <!-- PARTAGE -->
+  <section class="panel" id="p-partage" role="tabpanel" aria-labelledby="tab-partage" hidden>
+    <div class="follows" id="suivisList"></div>
+
+    <div class="card">
+      <div class="sect">
+        <h2>Suivre quelqu'un</h2>
+        <p>Saisis le code de partage qu'on t'a envoyé pour voir son heure de fin en direct.</p>
+        <form class="inline" id="followForm" autocomplete="off">
+          <input class="txt code" id="followCode" maxlength="12" placeholder="Code de partage" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Code de partage à suivre">
+          <button type="submit" class="btn" id="followBtn">Suivre</button>
+        </form>
+        <p class="msg" id="followMsg" role="status"></p>
+      </div>
+    </div>
+
+    <div class="card" id="accountNone">
+      <div class="sect">
+        <h2>Partager ma journée</h2>
+        <p>Crée tes codes pour retrouver ta journée sur tes autres appareils et la partager en lecture seule.</p>
+        <form class="inline" id="createForm" autocomplete="off">
+          <input class="txt" id="createName" maxlength="40" placeholder="Ton prénom" autocapitalize="words" aria-label="Ton prénom, visible par ceux qui te suivent">
+          <button type="submit" class="btn" id="createBtn">Créer</button>
+        </form>
+      </div>
+      <div class="sect">
+        <h2>J'ai déjà un code de synchro</h2>
+        <form class="inline" id="linkForm" autocomplete="off">
+          <input class="txt code" id="linkCode" maxlength="12" placeholder="Code de synchro" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Code de synchro">
+          <button type="submit" class="btn ghost" id="linkBtn">Connecter</button>
+        </form>
+      </div>
+      <p class="msg" id="accountMsg" role="status" style="padding-bottom:14px"></p>
+    </div>
+
+    <div class="card" id="accountSome" hidden>
+      <div class="sect">
+        <h2>Code de partage</h2>
+        <div class="codebox"><output id="shareCode">--------</output></div>
+        <p>Lecture seule : la personne voit ton arrivée, ta pause, ta fin prévue, ton temps restant et ton départ.</p>
+        <div class="actions">
+          <button type="button" class="btn" id="shareSend">Envoyer le lien</button>
+          <button type="button" class="btn ghost" id="shareCopy">Copier le code</button>
+        </div>
+      </div>
+      <div class="sect">
+        <h2>Code de synchro</h2>
+        <div class="codebox"><output id="syncCode">••••••••</output></div>
+        <div class="callout" id="syncCallout" hidden>Note ce code. Il te permet de retrouver ta journée sur un autre appareil.</div>
+        <p>À garder pour toi : il donne le droit de modifier ton pointage. Saisis-le sur ton autre téléphone dans « J'ai déjà un code de synchro ».</p>
+        <div class="actions">
+          <button type="button" class="btn ghost" id="syncShow">Afficher</button>
+          <button type="button" class="btn ghost" id="syncCopy">Copier</button>
+        </div>
+      </div>
+      <div class="sect">
+        <h2>Prénom affiché</h2>
+        <input class="txt" id="accName" maxlength="40" autocapitalize="words" aria-label="Prénom affiché aux personnes qui te suivent">
+      </div>
+      <div class="sect">
+        <h2>Sécurité</h2>
+        <div class="actions">
+          <button type="button" class="btn ghost" id="shareRenew">Nouveau code de partage</button>
+          <button type="button" class="btn ghost" id="unlink">Déconnecter cet appareil</button>
+          <button type="button" class="btn danger" id="delAcc">Supprimer mon compte</button>
+        </div>
+        <p>Un nouveau code de partage coupe l'accès à ceux qui avaient l'ancien.</p>
+      </div>
+      <p class="msg" id="accountMsg2" role="status" style="padding-bottom:14px"></p>
+    </div>
+  </section>
 </div>
 
 <script>
 (() => {
+  const SB_RPC = 'https://uwghxfihxznhvhizujjn.supabase.co/rest/v1/rpc/';
+  const SB_KEY = 'sb_publishable_FD1iPhHle7rsL3cacvCA4A_wKDxUdFs';
+  const POLL_MS = 20000;
+
   const $ = id => document.getElementById(id);
   const S = {
     get(k, d) { try { const v = localStorage.getItem('pdp.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem('pdp.' + k, JSON.stringify(v)); } catch (e) {} }
+    set(k, v) { try { localStorage.setItem('pdp.' + k, JSON.stringify(v)); } catch (e) {} },
+    del(k) { try { localStorage.removeItem('pdp.' + k); } catch (e) {} }
   };
   const pad = n => String(n).padStart(2, '0');
-  const today = () => { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+  const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const today = () => ymd(new Date());
   const nowMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
   const toClock = m => { m = ((m % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
   const parseT = v => { if (!v || !/^\d{1,2}:\d{2}/.test(v)) return null; const [h, m] = v.split(':').map(Number); return h * 60 + m; };
@@ -261,61 +387,393 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
   const digits = el => { const c = el.value.replace(/\D/g, '').slice(0, el.maxLength > 0 ? el.maxLength : 3); if (c !== el.value) el.value = c; };
   const durOf = (h, m) => int(h) * 60 + int(m);
   const normDur = (h, m) => setDur(h, m, durOf(h, m));
+  const norm = s => String(s || '').toUpperCase().replace(/\s+/g, '');
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const tsFrom = (d, t, after) => {
+    const [y, mo, da] = d.split('-').map(Number), [h, mi] = t.split(':').map(Number);
+    let v = new Date(y, mo - 1, da, h, mi).getTime();
+    if (after != null && v < after) v += 86400000;
+    return v;
+  };
+  const clockOf = ts => { const d = new Date(ts); return pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+  const msg = (el, text, kind) => { el.textContent = text || ''; el.className = 'msg' + (kind ? ' ' + kind : ''); };
+
+  async function rpc(fn, body) {
+    const r = await fetch(SB_RPC + fn, {
+      method: 'POST',
+      headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const txt = await r.text();
+    let data = null;
+    try { data = txt ? JSON.parse(txt) : null; } catch (e) {}
+    if (!r.ok) {
+      const err = new Error((data && data.message) || ('Erreur ' + r.status));
+      err.status = r.status; err.code = data && data.code;
+      throw err;
+    }
+    return data;
+  }
+  const isUnknown = e => e && (e.code === 'P0002' || /inconnu/i.test(e.message || ''));
+
+  async function copy(text, fallbackEl) {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch (e) {
+      if (fallbackEl) { const r = document.createRange(); r.selectNodeContents(fallbackEl); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+      return false;
+    }
+  }
+  function confirmBtn(btn, action, label) {
+    if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = btn.dataset.label; action(); return; }
+    btn.dataset.label = btn.textContent; btn.dataset.armed = '1'; btn.textContent = label;
+    setTimeout(() => { if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = btn.dataset.label; } }, 4000);
+  }
 
   /* ---------- Horloge ---------- */
-  const clock = $('clock');
   const tickClock = () => {
     const d = new Date();
-    clock.textContent = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + toClock(nowMin());
+    $('clock').textContent = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + toClock(nowMin());
   };
 
-  /* ---------- Journée ---------- */
-  const arr = $('arr'), tH = $('tH'), tM = $('tM'), pH = $('pH'), pM = $('pM');
+  /* ---------- Journée : état ---------- */
+  const arr = $('arr'), dep = $('dep'), tH = $('tH'), tM = $('tM'), pH = $('pH'), pM = $('pM');
   setDur(tH, tM, S.get('target', 528));
   setDur(pH, pM, S.get('pause', 0));
-  const saved = S.get('arr', null);
-  if (saved && saved.d === today() && parseT(saved.v) != null) arr.value = saved.v;
-  else { arr.value = toClock(nowMin()); S.set('arr', { d: today(), v: arr.value }); }
+
+  let day = S.get('day', null);
+  if (!day) { const old = S.get('arr', null); if (old && old.v) day = { d: old.d, arr: old.v, dep: '' }; }
+  if (!day || typeof day.d !== 'string') day = { d: today(), arr: '', dep: '' };
+  const saveDay = () => S.set('day', day);
+  const showDay = () => { arr.value = day.arr || ''; dep.value = day.dep || ''; };
+
+  // Change de jour : à l'ouverture, ou quand la journée précédente est finie depuis 4 h
+  function rollDay() {
+    if (day.d === today()) return false;
+    if (day.arr) {
+      const a = tsFrom(day.d, day.arr), end = a + (durOf(tH, tM) + durOf(pH, pM)) * 60000;
+      if (!day.dep && Date.now() < end + 4 * 3600e3) return false;
+      if (day.dep && Date.now() < tsFrom(day.d, day.dep, a) + 3600e3) return false;
+    }
+    day = { d: today(), arr: '', dep: '' }; saveDay(); showDay(); markDirty();
+    return true;
+  }
+
+  function etatLocal() {
+    const e = { d: day.d, target: durOf(tH, tM), pause: durOf(pH, pM) };
+    if (day.arr && parseT(day.arr) != null) {
+      e.arr = tsFrom(day.d, day.arr);
+      if (day.dep && parseT(day.dep) != null) e.dep = tsFrom(day.d, day.dep, e.arr);
+    }
+    return e;
+  }
 
   const chips = [...document.querySelectorAll('#pChips button')];
 
   function calcJour() {
-    const a = parseT(arr.value), t = durOf(tH, tM), p = durOf(pH, pM);
+    const a = parseT(day.arr), t = durOf(tH, tM), p = durOf(pH, pM), dp = parseT(day.dep);
     $('tCent').textContent = '= ' + cent(t);
     $('tPause').textContent = dur(p);
     chips.forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.m === p)));
+    $('depClr').hidden = !day.dep; $('depNow').hidden = !!day.dep;
     const st = $('status'), fill = $('fill');
     if (a == null) {
       $('endTime').textContent = '--:--'; $('tEnd').textContent = '--:--'; $('tArr').textContent = '--:--';
-      $('endDay').hidden = true; st.textContent = 'Saisis ton heure d’arrivée'; st.className = 'chip'; fill.style.width = '0'; return;
+      $('endDay').hidden = true; st.textContent = 'Pas encore pointé'; st.className = 'chip'; fill.style.width = '0'; fill.classList.remove('done'); return;
     }
-    const end = a + t + p, day = Math.floor(end / 1440);
+    const end = a + t + p, dd = Math.floor(end / 1440);
     $('endTime').textContent = toClock(end);
-    $('endDay').hidden = day < 1; $('endDay').textContent = '+' + day + ' j';
+    $('endDay').hidden = dd < 1; $('endDay').textContent = '+' + dd + ' j';
     $('tArr').textContent = toClock(a); $('tEnd').textContent = toClock(end);
-    let n = nowMin(); if (n < a && end > 1440) n += 1440;
     const span = end - a; let cls, frac;
-    if (n < a) { st.textContent = 'Début dans ' + dur(a - n); cls = ''; frac = 0; }
-    else if (n < end) { st.textContent = 'Reste ' + dur(end - n); cls = 'run'; frac = span > 0 ? (n - a) / span : 1; }
-    else { st.textContent = 'Terminé · +' + dur(n - end); cls = 'done'; frac = 1; }
+    if (dp != null) {
+      let d2 = dp; if (d2 < a) d2 += 1440;
+      const diff = d2 - end;
+      st.textContent = 'Parti à ' + toClock(d2) + ' · ' + (diff >= 0 ? '+' : '') + dur(diff);
+      cls = diff >= 0 ? 'done' : 'over'; frac = span > 0 ? (d2 - a) / span : 1;
+    } else {
+      let n = nowMin(); if (day.d !== today()) n += 1440; else if (n < a && end > 1440) n += 1440;
+      if (n < a) { st.textContent = 'Début dans ' + dur(a - n); cls = ''; frac = 0; }
+      else if (n < end) { st.textContent = 'Reste ' + dur(end - n); cls = 'run'; frac = span > 0 ? (n - a) / span : 1; }
+      else { st.textContent = 'Terminé · +' + dur(n - end); cls = 'done'; frac = 1; }
+    }
     st.className = 'chip ' + cls;
     fill.style.width = (Math.min(1, Math.max(0, frac)) * 100).toFixed(1) + '%';
     fill.classList.toggle('done', cls === 'done');
   }
 
-  arr.addEventListener('input', () => { S.set('arr', { d: today(), v: arr.value }); calcJour(); syncEcart(); });
-  $('arrNow').addEventListener('click', () => { arr.value = toClock(nowMin()); S.set('arr', { d: today(), v: arr.value }); calcJour(); syncEcart(); });
+  const changedDay = () => { saveDay(); calcJour(); syncEcart(); markDirty(); };
+  arr.addEventListener('input', () => { day.arr = arr.value; changedDay(); });
+  $('arrNow').addEventListener('click', () => { if (day.d !== today()) day = { d: today(), arr: '', dep: '' }; day.arr = toClock(nowMin()); day.dep = ''; showDay(); changedDay(); });
+  dep.addEventListener('input', () => { day.dep = dep.value; changedDay(); });
+  $('depNow').addEventListener('click', () => { day.dep = toClock(nowMin()); showDay(); changedDay(); });
+  $('depClr').addEventListener('click', () => { day.dep = ''; showDay(); changedDay(); });
   [tH, tM].forEach(el => {
-    el.addEventListener('input', () => { digits(el); S.set('target', durOf(tH, tM)); calcJour(); calcEcart(); });
+    el.addEventListener('input', () => { digits(el); S.set('target', durOf(tH, tM)); calcJour(); calcEcart(); markDirty(); });
     el.addEventListener('blur', () => normDur(tH, tM));
   });
   [pH, pM].forEach(el => {
-    el.addEventListener('input', () => { digits(el); S.set('pause', durOf(pH, pM)); calcJour(); syncEcart(); });
+    el.addEventListener('input', () => { digits(el); S.set('pause', durOf(pH, pM)); calcJour(); syncEcart(); markDirty(); });
     el.addEventListener('blur', () => normDur(pH, pM));
   });
   chips.forEach(c => c.addEventListener('click', () => {
-    setDur(pH, pM, +c.dataset.m); S.set('pause', +c.dataset.m); calcJour(); syncEcart();
+    setDur(pH, pM, +c.dataset.m); S.set('pause', +c.dataset.m); calcJour(); syncEcart(); markDirty();
   }));
+
+  /* ---------- Synchro (compte) ---------- */
+  let compte = S.get('compte', null);
+  if (compte && (!compte.sync || !compte.share)) compte = null;
+  let dirty = !!S.get('dirty', false), lastMaj = +S.get('maj', 0) || 0, ver = 0, pushTimer = null, syncState = compte ? 'idle' : 'off', syncVisible = false;
+  const saveCompte = () => { if (compte) S.set('compte', compte); else S.del('compte'); };
+
+  function setSync(s) { syncState = s; renderSyncNote(); }
+  function renderSyncNote() {
+    const n = $('syncNote');
+    if (!compte) { n.textContent = 'Réglages enregistrés sur ce téléphone. Onglet Partage pour synchroniser ou partager ta journée.'; return; }
+    const txt = {
+      idle: 'Synchronisation…', envoi: 'Envoi…',
+      ok: 'Synchronisé · code de partage ',
+      offline: 'Hors ligne : la synchro reprendra toute seule.',
+      unknown: 'Ce code de synchro n\'existe plus. Reconnecte-toi dans Partage.'
+    }[syncState] || '';
+    n.innerHTML = esc(txt) + (syncState === 'ok' ? '<b>' + esc(compte.share) + '</b>' : '');
+  }
+
+  function markDirty() {
+    if (!compte) return;
+    dirty = true; ver++; S.set('dirty', true);
+    clearTimeout(pushTimer); pushTimer = setTimeout(push, 700);
+  }
+  async function push() {
+    if (!compte || !dirty) return;
+    const v = ver;
+    setSync('envoi');
+    try {
+      const maj = await rpc('pointeuse_ecrire', { p_code: compte.sync, p_nom: compte.nom || '', p_etat: etatLocal() });
+      lastMaj = Date.parse(maj) || Date.now(); S.set('maj', lastMaj);
+      if (v === ver) { dirty = false; S.set('dirty', false); }
+      setSync('ok');
+    } catch (e) { setSync(isUnknown(e) ? 'unknown' : 'offline'); }
+  }
+  function applyEtat(e) {
+    e = e || {};
+    if (typeof e.target === 'number') { setDur(tH, tM, e.target); S.set('target', e.target); }
+    if (typeof e.pause === 'number') { setDur(pH, pM, e.pause); S.set('pause', e.pause); }
+    const recent = typeof e.arr === 'number' && Date.now() - e.arr < 20 * 3600e3 && e.arr - Date.now() < 12 * 3600e3;
+    if (recent) day = { d: ymd(new Date(e.arr)), arr: clockOf(e.arr), dep: typeof e.dep === 'number' ? clockOf(e.dep) : '' };
+    else if (e.d === today()) day = { d: today(), arr: '', dep: '' };
+    else if (day.d === today() && day.arr) { dirty = true; ver++; }
+    saveDay(); showDay(); calcJour(); syncEcart();
+  }
+  async function pull() {
+    if (!compte) return;
+    if (dirty) { push(); return; }
+    try {
+      const rows = await rpc('pointeuse_lire', { p_code: compte.sync });
+      if (!rows || !rows.length) { setSync('unknown'); return; }
+      const r = rows[0], m = Date.parse(r.maj) || 0;
+      if (r.code_partage) compte.share = r.code_partage;
+      if (typeof r.nom === 'string' && document.activeElement !== $('accName')) compte.nom = r.nom;
+      saveCompte();
+      if (m > lastMaj) { applyEtat(r.etat); lastMaj = m; S.set('maj', m); if (dirty) push(); }
+      setSync(dirty ? 'envoi' : 'ok'); renderCompte();
+    } catch (e) { setSync(isUnknown(e) ? 'unknown' : 'offline'); }
+  }
+
+  /* ---------- Partage : mon compte ---------- */
+  function renderCompte() {
+    $('accountNone').hidden = !!compte; $('accountSome').hidden = !compte;
+    if (!compte) { renderSyncNote(); return; }
+    $('shareCode').textContent = compte.share;
+    $('syncCode').textContent = syncVisible ? compte.sync : '••••••••';
+    $('syncShow').textContent = syncVisible ? 'Masquer' : 'Afficher';
+    if (document.activeElement !== $('accName')) $('accName').value = compte.nom || '';
+    renderSyncNote();
+  }
+
+  $('createForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const nom = $('createName').value.trim(), m = $('accountMsg'), b = $('createBtn');
+    if (!nom) { msg(m, 'Indique ton prénom : c\'est ce que verront les personnes qui te suivent.', 'err'); $('createName').focus(); return; }
+    b.disabled = true; msg(m, 'Création…');
+    try {
+      const rows = await rpc('pointeuse_creer', { p_nom: nom, p_etat: etatLocal() });
+      const r = rows[0];
+      compte = { sync: r.code_synchro, share: r.code_partage, nom };
+      saveCompte(); lastMaj = Date.parse(r.maj) || Date.now(); S.set('maj', lastMaj); dirty = false; S.set('dirty', false);
+      syncVisible = true; $('syncCallout').hidden = false;
+      msg(m, ''); setSync('ok'); renderCompte();
+    } catch (err) { msg(m, err.message === 'Failed to fetch' ? 'Pas de connexion. Réessaie quand tu as du réseau.' : err.message, 'err'); }
+    b.disabled = false;
+  });
+
+  $('linkForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const code = norm($('linkCode').value), m = $('accountMsg'), b = $('linkBtn');
+    if (code.length !== 8) { msg(m, 'Un code de synchro fait 8 caractères.', 'err'); return; }
+    b.disabled = true; msg(m, 'Connexion…');
+    try {
+      const rows = await rpc('pointeuse_lire', { p_code: code });
+      if (!rows || !rows.length) { msg(m, 'Code de synchro inconnu. Vérifie les symboles.', 'err'); }
+      else {
+        const r = rows[0];
+        compte = { sync: code, share: r.code_partage, nom: r.nom || '' };
+        saveCompte(); dirty = false; S.set('dirty', false);
+        applyEtat(r.etat); lastMaj = Date.parse(r.maj) || Date.now(); S.set('maj', lastMaj);
+        $('linkCode').value = ''; msg(m, ''); setSync('ok'); renderCompte();
+        if (dirty) push();
+      }
+    } catch (err) { msg(m, err.message === 'Failed to fetch' ? 'Pas de connexion. Réessaie quand tu as du réseau.' : err.message, 'err'); }
+    b.disabled = false;
+  });
+
+  $('syncShow').addEventListener('click', () => { syncVisible = !syncVisible; renderCompte(); });
+  $('syncCopy').addEventListener('click', async () => {
+    const ok = await copy(compte.sync, $('syncCode'));
+    msg($('accountMsg2'), ok ? 'Code de synchro copié.' : 'Copie impossible : le code est sélectionné, copie-le à la main.', ok ? 'ok' : '');
+  });
+  const shareLink = () => location.origin + location.pathname + '?suivre=' + encodeURIComponent(compte.share);
+  $('shareCopy').addEventListener('click', async () => {
+    const ok = await copy(compte.share, $('shareCode'));
+    msg($('accountMsg2'), ok ? 'Code de partage copié.' : 'Copie impossible : le code est sélectionné, copie-le à la main.', ok ? 'ok' : '');
+  });
+  $('shareSend').addEventListener('click', async () => {
+    const text = 'Suis ma journée en direct sur la Pointeuse. Code de partage : ' + compte.share;
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Pointeuse de poche', text, url: shareLink() }); return; }
+      catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    const ok = await copy(text + '\n' + shareLink());
+    msg($('accountMsg2'), ok ? 'Lien copié. Colle-le dans un message.' : 'Partage impossible ici. Envoie le code de partage affiché ci-dessus.', ok ? 'ok' : '');
+  });
+  $('accName').addEventListener('change', () => {
+    const v = $('accName').value.trim().slice(0, 40);
+    if (!v) { $('accName').value = compte.nom || ''; return; }
+    compte.nom = v; saveCompte(); markDirty();
+    msg($('accountMsg2'), 'Prénom mis à jour.', 'ok');
+  });
+  $('shareRenew').addEventListener('click', e => confirmBtn(e.currentTarget, async () => {
+    const m = $('accountMsg2');
+    try { const sh = await rpc('pointeuse_nouveau_partage', { p_code: compte.sync }); compte.share = sh; saveCompte(); renderCompte(); msg(m, 'Nouveau code de partage créé. Envoie-le à ceux qui doivent te suivre.', 'ok'); }
+    catch (err) { msg(m, isUnknown(err) ? 'Code de synchro inconnu.' : 'Pas de connexion. Réessaie plus tard.', 'err'); }
+  }, 'Confirmer le changement'));
+  $('unlink').addEventListener('click', e => confirmBtn(e.currentTarget, () => {
+    compte = null; saveCompte(); S.del('dirty'); S.del('maj'); dirty = false; lastMaj = 0; syncVisible = false; $('syncCallout').hidden = true;
+    setSync('off'); renderCompte(); msg($('accountMsg'), 'Appareil déconnecté. Ta journée reste enregistrée sur ce téléphone.', 'ok');
+  }, 'Confirmer la déconnexion'));
+  $('delAcc').addEventListener('click', e => confirmBtn(e.currentTarget, async () => {
+    const m = $('accountMsg2');
+    try {
+      await rpc('pointeuse_supprimer', { p_code: compte.sync });
+      compte = null; saveCompte(); S.del('dirty'); S.del('maj'); dirty = false; lastMaj = 0; syncVisible = false; $('syncCallout').hidden = true;
+      setSync('off'); renderCompte(); msg($('accountMsg'), 'Compte supprimé. Plus personne ne peut voir ta journée.', 'ok');
+    } catch (err) { msg(m, 'Pas de connexion. Réessaie plus tard.', 'err'); }
+  }, 'Supprimer définitivement'));
+
+  /* ---------- Partage : personnes suivies ---------- */
+  let suivis = S.get('suivis', []);
+  if (!Array.isArray(suivis)) suivis = [];
+  suivis = suivis.filter(s => s && typeof s.code === 'string').map(s => ({ code: norm(s.code), nom: String(s.nom || '') }));
+  const cache = {};
+  let suivisErr = false;
+  const saveSuivis = () => S.set('suivis', suivis);
+
+  function infoSuivi(c) {
+    const d = cache[c];
+    if (!d) return { kind: 'load' };
+    if (!d.ok) return { kind: 'gone' };
+    const e = d.etat || {}, now = Date.now();
+    if (typeof e.arr !== 'number' || now - e.arr > 20 * 3600e3 || e.arr - now > 12 * 3600e3) return { kind: 'none', maj: d.maj };
+    const t = e.target || 0, p = e.pause || 0, end = e.arr + (t + p) * 60000, span = end - e.arr;
+    const r = { kind: 'day', arr: e.arr, end, t, p, maj: d.maj };
+    if (typeof e.dep === 'number') {
+      const diff = Math.round((e.dep - end) / 60000);
+      r.chip = 'Parti à ' + clockOf(e.dep) + ' · ' + (diff >= 0 ? '+' : '') + dur(diff); r.cls = diff >= 0 ? 'done' : 'over';
+      r.frac = span > 0 ? (e.dep - e.arr) / span : 1; r.dep = e.dep;
+    } else if (now < e.arr) { r.chip = 'Arrive à ' + clockOf(e.arr); r.cls = ''; r.frac = 0; }
+    else if (now < end) { r.chip = 'Reste ' + dur(Math.ceil((end - now) / 60000)); r.cls = 'run'; r.frac = span > 0 ? (now - e.arr) / span : 1; }
+    else { r.chip = 'Fin prévue passée · +' + dur(Math.floor((now - end) / 60000)); r.cls = 'done'; r.frac = 1; }
+    return r;
+  }
+  const agoText = maj => {
+    if (!maj) return '';
+    const m = Math.floor((Date.now() - maj) / 60000);
+    return m < 1 ? 'Mis à jour à l\'instant' : m < 60 ? 'Mis à jour il y a ' + m + ' min' : 'Mis à jour à ' + clockOf(maj);
+  };
+
+  function renderSuivis() {
+    const list = $('suivisList'), mini = $('suivisJour');
+    if (!suivis.length) { list.innerHTML = ''; mini.hidden = true; mini.innerHTML = ''; return; }
+    list.innerHTML = suivis.map(s => {
+      const i = infoSuivi(s.code), name = esc(s.nom || 'Sans nom');
+      const head = `<div class="t-head"><span class="t-name">${name}</span><button type="button" class="del" data-del="${esc(s.code)}" aria-label="Ne plus suivre ${name}">×</button></div>`;
+      if (i.kind !== 'day') {
+        const t = { load: suivisErr ? 'Hors ligne : impossible de charger.' : 'Chargement…', gone: 'Ce code de partage n\'est plus valide. Demande le nouveau.', none: 'Pas encore pointé aujourd\'hui.' }[i.kind];
+        return `<div class="ticket mini">${head}<div class="t-sub">${esc(t)}</div>${i.maj ? `<div class="t-foot">${esc(agoText(i.maj))}</div>` : ''}</div>`;
+      }
+      return `<div class="ticket mini">${head}
+        <div class="t-label">Fin prévue</div>
+        <div class="t-time">${clockOf(i.end)}</div>
+        <span class="chip ${i.cls}">${esc(i.chip)}</span>
+        <div class="track" aria-hidden="true"><div class="fill${i.cls === 'done' ? ' done' : ''}" style="width:${(Math.min(1, Math.max(0, i.frac)) * 100).toFixed(1)}%"></div></div>
+        <div class="t-ends"><span>Arrivée<b>${clockOf(i.arr)}</b></span><span>Pause<b>${dur(i.p)}</b></span><span>${i.dep ? 'Départ' : 'À faire'}<b>${i.dep ? clockOf(i.dep) : dur(i.t)}</b></span></div>
+        <div class="t-foot">${esc(agoText(i.maj))}</div>
+      </div>`;
+    }).join('');
+    mini.hidden = false;
+    mini.innerHTML = suivis.map(s => {
+      const i = infoSuivi(s.code), name = esc(s.nom || 'Sans nom');
+      let ft, chip, cls = '';
+      if (i.kind === 'day') { ft = 'Fin ' + clockOf(i.end); chip = i.chip.split(' · ')[0]; cls = i.cls; }
+      else { ft = i.kind === 'none' ? 'Pas encore pointé' : i.kind === 'gone' ? 'Code plus valide' : (suivisErr ? 'Hors ligne' : 'Chargement…'); chip = '—'; }
+      return `<div class="frow"><span class="fn">${name}</span><span class="fc ${cls}">${esc(chip)}</span><span class="ft">${esc(ft)}</span></div>`;
+    }).join('');
+  }
+
+  async function pullSuivis() {
+    if (!suivis.length) { renderSuivis(); return; }
+    try {
+      const rows = await rpc('pointeuse_voir', { p_codes: suivis.map(s => s.code) }) || [];
+      const by = {}; rows.forEach(r => { by[r.code_partage] = r; });
+      suivis.forEach(s => {
+        const r = by[s.code];
+        if (r) { if (r.nom) s.nom = r.nom; cache[s.code] = { ok: true, etat: r.etat || {}, maj: Date.parse(r.maj) || 0 }; }
+        else cache[s.code] = { ok: false };
+      });
+      saveSuivis(); suivisErr = false;
+    } catch (e) { suivisErr = true; }
+    renderSuivis();
+  }
+
+  async function addSuivi(raw) {
+    const code = norm(raw), m = $('followMsg');
+    if (code.length !== 8) { msg(m, 'Un code de partage fait 8 caractères.', 'err'); return false; }
+    if (compte && code === compte.share) { msg(m, 'C\'est ton propre code de partage.', 'err'); return false; }
+    if (suivis.some(s => s.code === code)) { msg(m, 'Tu suis déjà cette personne.', ''); return true; }
+    if (suivis.length >= 20) { msg(m, 'Tu suis déjà 20 personnes. Retire quelqu\'un d\'abord.', 'err'); return false; }
+    msg(m, 'Recherche…');
+    try {
+      const rows = await rpc('pointeuse_voir', { p_codes: [code] }) || [];
+      if (!rows.length) { msg(m, 'Aucun compte avec ce code de partage. Vérifie les symboles.', 'err'); return false; }
+      const r = rows[0];
+      suivis.push({ code, nom: r.nom || '' }); saveSuivis();
+      cache[code] = { ok: true, etat: r.etat || {}, maj: Date.parse(r.maj) || 0 };
+      msg(m, (r.nom || 'Cette personne') + ' ajouté(e). Son heure de fin s\'affiche aussi dans Journée.', 'ok');
+      renderSuivis(); return true;
+    } catch (e) { msg(m, 'Pas de connexion. Réessaie quand tu as du réseau.', 'err'); return false; }
+  }
+
+  $('followForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    $('followBtn').disabled = true;
+    if (await addSuivi($('followCode').value)) $('followCode').value = '';
+    $('followBtn').disabled = false;
+  });
+  $('suivisList').addEventListener('click', e => {
+    const b = e.target.closest('[data-del]'); if (!b) return;
+    const code = b.dataset.del;
+    suivis = suivis.filter(s => s.code !== code); delete cache[code]; saveSuivis(); renderSuivis();
+    msg($('followMsg'), '', '');
+  });
 
   /* ---------- Calcul ---------- */
   const rowsEl = $('rows');
@@ -382,7 +840,7 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
   const eFrom = $('eFrom'), eTo = $('eTo'), eH = $('eH'), eM = $('eM');
   let eTouched = false;
   function fillEcart() {
-    eFrom.value = arr.value; eTo.value = toClock(nowMin()); setDur(eH, eM, durOf(pH, pM)); calcEcart();
+    eFrom.value = day.arr || ''; eTo.value = day.dep || toClock(nowMin()); setDur(eH, eM, durOf(pH, pM)); calcEcart();
   }
   function syncEcart() { if (!eTouched) fillEcart(); }
   function calcEcart() {
@@ -406,6 +864,7 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
 
   /* ---------- Onglets ---------- */
   const tabs = [...document.querySelectorAll('[role="tab"]')];
+  const valid = tabs.map(t => t.dataset.p);
   function show(p, focus) {
     tabs.forEach(t => {
       const on = t.dataset.p === p;
@@ -415,6 +874,7 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
     });
     S.set('tab', p);
     if (p === 'ecart') syncEcart();
+    if (p === 'partage') pullSuivis();
   }
   tabs.forEach((t, i) => {
     t.addEventListener('click', () => show(t.dataset.p));
@@ -424,15 +884,23 @@ input[type="time"]::-webkit-date-and-time-value{text-align:left}
       show(n.dataset.p, true);
     });
   });
-  const valid = ['jour', 'calcul', 'ecart'];
-  const h = location.hash.replace('#', '');
-  const first = valid.includes(h) ? h : (valid.includes(S.get('tab', 'jour')) ? S.get('tab', 'jour') : 'jour');
 
   /* ---------- Démarrage ---------- */
-  tickClock(); calcJour(); renderRows(); fillEcart(); show(first);
-  const refresh = () => { tickClock(); calcJour(); syncEcart(); };
+  let first = S.get('tab', 'jour'); if (!valid.includes(first)) first = 'jour';
+  const qp = new URLSearchParams(location.search), incoming = qp.get('suivre');
+  if (incoming) { first = 'partage'; try { history.replaceState(null, '', location.pathname); } catch (e) {} }
+
+  rollDay(); showDay();
+  tickClock(); calcJour(); renderRows(); fillEcart(); renderCompte(); renderSuivis(); show(first);
+  if (incoming) { $('followCode').value = norm(incoming); addSuivi(incoming).then(ok => { if (ok) $('followCode').value = ''; }); }
+  if (compte) { if (dirty) push(); else pull(); }
+  pullSuivis();
+
+  const refresh = () => { tickClock(); rollDay(); calcJour(); syncEcart(); renderSuivis(); };
   setInterval(refresh, 5000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+  setInterval(() => { if (!document.hidden) { pull(); pullSuivis(); } }, POLL_MS);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { refresh(); pull(); pullSuivis(); } });
+  window.addEventListener('online', () => { pull(); pullSuivis(); });
 })();
 </script>
 <script>
