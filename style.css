@@ -136,6 +136,7 @@ input[type="time"]::-webkit-date-and-time-value,input[type="date"]::-webkit-date
 .msg.err{color:var(--accent)}
 .msg.ok{color:var(--good)}
 .callout{border:1px solid var(--good);border-radius:12px;padding:12px;font-size:14px}
+.callout.warn{border-color:var(--accent)}
 .back{align-self:flex-start;min-height:40px;padding:0 4px;border:0;background:transparent;color:var(--muted);font-weight:600;font-size:15px;cursor:pointer}
 
 /* Historique / cumul */

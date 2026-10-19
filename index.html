@@ -47,7 +47,7 @@
   <section class="panel" id="p-jour" role="tabpanel" aria-labelledby="tab-jour">
     <div class="ticket" aria-live="polite">
       <div class="t-label">Fin de journée</div>
-      <div class="t-time"><span id="endTime">--:--</span><sup id="endDay" hidden>+1 j</sup></div>
+      <div class="t-time"><span id="endTime">—</span><sup id="endDay" hidden>+1 j</sup></div>
       <span class="chip" id="status">—</span>
       <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
       <div class="t-ends">
@@ -173,6 +173,7 @@
       <div class="sect">
         <h2>Partager ma journée</h2>
         <p>Crée ton compte pour synchroniser tes appareils et envoyer un lien de suivi en direct : heure de badge, fin prévue, départ, historique et solde du mois.</p>
+        <div class="callout warn">À faire une seule fois. Sur iPhone, Safari et l'app installée sur l'écran d'accueil ne partagent pas leurs données : si tu as déjà un compte ailleurs, connecte-toi plus bas avec ton code de synchro. Sinon, ton lien de suivi ne montrera pas ce que tu badges ici.</div>
         <form class="inline" id="createForm" autocomplete="off">
           <input class="txt" id="createName" maxlength="40" placeholder="Ton prénom" autocapitalize="words" aria-label="Ton prénom, visible sur la page de suivi">
           <button type="submit" class="btn" id="createBtn">Créer</button>
@@ -303,7 +304,7 @@
     $('depClr').hidden = !day.dep; $('depNow').hidden = !!day.dep;
     const st = $('status'), fill = $('fill');
     if (a == null) {
-      $('endTime').textContent = '--:--'; $('tEnd').textContent = '--:--'; $('tArr').textContent = '--:--';
+      $('endTime').textContent = '—'; $('tEnd').textContent = '--:--'; $('tArr').textContent = '--:--';
       $('endDay').hidden = true; st.textContent = 'Pas encore pointé'; st.className = 'chip'; fill.style.width = '0'; fill.classList.remove('done'); return;
     }
     const end = a + t + p, dd = Math.floor(end / 1440);

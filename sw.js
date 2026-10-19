@@ -1,4 +1,4 @@
-const CACHE = 'pointeuse-v3';
+const CACHE = 'pointeuse-v4';
 const SHELL = ['./', './index.html', './suivi.html', './style.css', './commun.js', './manifest.webmanifest', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

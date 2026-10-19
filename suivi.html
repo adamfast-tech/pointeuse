@@ -41,7 +41,7 @@
     <div class="ticket" aria-live="polite">
       <div class="t-head"><span class="t-name" id="vName">—</span></div>
       <div class="t-label" id="vLabel">Aujourd'hui</div>
-      <div class="t-time" id="vTime">--:--</div>
+      <div class="t-time" id="vTime">—</div>
       <span class="chip" id="vChip">—</span>
       <div class="track" aria-hidden="true"><div class="fill" id="vFill"></div></div>
       <div class="t-ends">
@@ -135,7 +135,7 @@
     };
     if (!recent) {
       const days = (data.jours || []).filter(j => j.dep != null).sort((x, y) => x.jour < y.jour ? 1 : -1);
-      set('Aujourd\'hui', '--:--', 'Pas encore badgé', '', 0);
+      set('Aujourd\'hui', '—', 'Pas encore badgé', '', 0);
       $('vArr').textContent = '--:--'; $('vPause').textContent = '—'; $('vEndL').firstChild.textContent = 'Fin prévue'; $('vEnd').textContent = '--:--';
       $('vSub').textContent = days.length ? 'Dernier jour badgé : ' + P.dayLabel(days[0].jour) + ', ' + clockOf(days[0].arr) + ' → ' + clockOf(days[0].dep) : '';
     } else {
